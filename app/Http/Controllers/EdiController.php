@@ -20,6 +20,13 @@ class EdiController extends Controller
 
     }
 
+    /**
+     * This method creates all Edi text lines using various input data containing values and their line positions.
+     *
+     * @param $aData
+     * @return string
+     * 
+     */
     public function createEdiLine($aData)
     {
         // Start the text line
@@ -43,6 +50,12 @@ class EdiController extends Controller
         return $sLine;
     }
 
+    /**
+     * Beginning line
+     * @param $oPurchaseOrder
+     * @return string
+     *
+     */
     public function createBeg($oPurchaseOrder)
     {
         $aDataElements = [
@@ -51,22 +64,18 @@ class EdiController extends Controller
             "data" => [
                 [
                     "position" => 0,
-                    "label" => "Purpose",
                     "value" => $oPurchaseOrder->purpose,
                 ],
                 [
                     "position" => 1,
-                    "label" => "PO Type",
                     "value" => $oPurchaseOrder->type,
                 ],
                 [
                     "position" => 2,
-                    "label" => "PO Number",
                     "value" => $oPurchaseOrder->number,
                 ],
                 [
                     "position" => 4,
-                    "label" => "Date",
                     "value" => $oPurchaseOrder->date,
                 ],
             ]
@@ -77,6 +86,11 @@ class EdiController extends Controller
         return $sBegLine;
     }
 
+    /**
+     * Create the currency type
+     * @param $oPurchaseOrder
+     * @return string
+     */
     public function createCur($oPurchaseOrder)
     {
         $aDataElements = [
@@ -85,12 +99,10 @@ class EdiController extends Controller
             "data" => [
                 [
                     "position" => 0,
-                    "label" => "Purchaser",
                     "value" => $oPurchaseOrder->purchaser,
                 ],
                 [
                     "position" => 1,
-                    "label" => "Currency Code",
                     "value" => $oPurchaseOrder->currency_code,
                 ],
             ]
@@ -101,6 +113,13 @@ class EdiController extends Controller
         return $sCurLine;
     }
 
+    /**
+     * Reference line looping
+     *
+     * @param $aPoReferences
+     * @return string
+     *
+     */
     public function createRef($aPoReferences)
     {
         $aRefDataLines = array();
@@ -108,12 +127,10 @@ class EdiController extends Controller
             $aRefDataLines[] = [
                 [
                     "position" => 0,
-                    "label" => "Customer Order No",
                     "value" => $aPoReference->code,
                 ],
                 [
                     "position" => 1,
-                    "label" => "Number",
                     "value" => $aPoReference->value,
                 ],
 
@@ -134,7 +151,13 @@ class EdiController extends Controller
         return $sRefLines;
     }
 
-    
+    /**
+     * Sac data line looping
+     *
+     * @param $aPoSacs
+     * @return string
+     *
+     */
     public function createSac($aPoSacs)
     {
         $aSacDataLines = array();
@@ -142,17 +165,14 @@ class EdiController extends Controller
             $aSacDataLines[] = [
                 [
                     "position" => 0,
-                    "label" => "Allowance Or Charge",
                     "value" => $aPoSac->indicator,
                 ],
                 [
                     "position" => 1,
-                    "label" => "Discount",
                     "value" => $aPoSac->code,
                 ],
                 [
                     "position" => 5,
-                    "label" => "Amount",
                     "value" => $aPoSac->amount,
                 ],
 
@@ -173,6 +193,13 @@ class EdiController extends Controller
         return $sSacLines;
     }
 
+    /**
+     * Create ITD line
+     *
+     * @param $oPurchaseOrder
+     * @return string
+     *
+     */
     public function createItd($oPurchaseOrder)
     {
         $aDataElements = [
@@ -181,12 +208,10 @@ class EdiController extends Controller
             "data" => [
                 [
                     "position" => 0,
-                    "label" => "Previously Agreed Upon",
                     "value" => $oPurchaseOrder->terms_type_code,
                 ],
                 [
                     "position" => 1,
-                    "label" => "Invoice Date",
                     "value" => $oPurchaseOrder->terms_basis_date_code,
                 ],
             ]
@@ -197,6 +222,12 @@ class EdiController extends Controller
         return $sItdLine;
     }
 
+    /**
+     * Date and time qualifiers
+     * @param $oPurchaseOrder
+     * @return string
+     *
+     */
     public function createDtm($oPurchaseOrder)
     {
         $aDataElements = [
@@ -205,12 +236,10 @@ class EdiController extends Controller
             "data" => [
                 [
                     "position" => 0,
-                    "label" => "Ship No Later Than",
                     "value" => $oPurchaseOrder->date_time_qualifier,
                 ],
                 [
                     "position" => 1,
-                    "label" => "Number",
                     "value" => $oPurchaseOrder->qualifier_date,
                 ],
             ]
@@ -221,6 +250,13 @@ class EdiController extends Controller
         return $sDtmLine;
     }
 
+    /**
+     * Create TD5 line (Transportation)
+     *
+     * @param $oPurchaseOrder
+     * @return string
+     *
+     */
     public function createTd5($oPurchaseOrder)
     {
         $aDataElements = [
@@ -229,22 +265,18 @@ class EdiController extends Controller
             "data" => [
                 [
                     "position" => 3,
-                    "label" => "Transportation Mode",
                     "value" => $oPurchaseOrder->transportation_type_code,
                 ],
                 [
                     "position" => 4,
-                    "label" => "Routing",
                     "value" => $oPurchaseOrder->routing,
                 ],
                 [
                     "position" => 11,
-                    "label" => "Priority Level",
                     "value" => $oPurchaseOrder->service_level_code_1,
                 ],
                 [
                     "position" => 12,
-                    "label" => "Extra Detail",
                     "value" => $oPurchaseOrder->service_level_code_2,
                 ],
             ]
@@ -255,7 +287,13 @@ class EdiController extends Controller
         return $sTd5Line;
     }
 
-
+    /**
+     * N(x) Blocks - These block lines area created for each "Bill To, Ship To" address ID entries if they exist.
+     *
+     * @param $aNamingBlockTypes
+     * @return string
+     *
+     */
     public function createNamingBlock($aNamingBlockTypes)
     {
         $sNBlockLine = "";
@@ -270,12 +308,10 @@ class EdiController extends Controller
                 "data" => [
                     [
                         "position" => 0,
-                        "label" => "Bill Type Symbol",
                         "value" => $sType,
                     ],
                     [
                         "position" => 1,
-                        "label" => "Name",
                         "value" => $oPoAddress->user->name,
                     ],
                 ]
@@ -288,12 +324,10 @@ class EdiController extends Controller
                 "data" => [
                     [
                         "position" => 0,
-                        "label" => "Address",
                         "value" => $oPoAddress->address,
                     ],
                     [
                         "position" => 1,
-                        "label" => "Address 2",
                         "value" => $oPoAddress->address2,
                     ],
                 ]
@@ -306,22 +340,18 @@ class EdiController extends Controller
                 "data" => [
                     [
                         "position" => 0,
-                        "label" => "City",
                         "value" => $oPoAddress->city,
                     ],
                     [
                         "position" => 1,
-                        "label" => "State",
                         "value" => $oPoAddress->state,
                     ],
                     [
                         "position" => 2,
-                        "label" => "Postal Code",
                         "value" => $oPoAddress->zip,
                     ],
                     [
                         "position" => 3,
-                        "label" => "Country",
                         "value" => $oPoAddress->country,
                     ],
                 ]
@@ -335,32 +365,26 @@ class EdiController extends Controller
                     "data" => [
                         [
                             "position" => 0,
-                            "label" => "Information Contact Label",
                             "value" => "IC",
                         ],
                         [
                             "position" => 1,
-                            "label" => "Name",
                             "value" => $oPoAddress->user->name,
                         ],
                         [
                             "position" => 2,
-                            "label" => "Telephone Label",
                             "value" => "TE",
                         ],
                         [
                             "position" => 3,
-                            "label" => "Phone",
                             "value" => $oPoAddress->user->phone,
                         ],
                         [
                             "position" => 4,
-                            "label" => "Email Label",
                             "value" => "EM",
                         ],
                         [
                             "position" => 5,
-                            "label" => "Email",
                             "value" => $oPoAddress->user->email,
                         ],
                     ]
@@ -373,6 +397,13 @@ class EdiController extends Controller
         return $sNBlockLine;
     }
 
+    /**
+     * Basic item line data
+     *
+     * @param $oPurchaseOrder
+     * @return string
+     *
+     */
     public function createItemData($oPurchaseOrder)
     {
         $aPerDataElements = [
@@ -381,47 +412,38 @@ class EdiController extends Controller
             "data" => [
                 [
                     "position" => 0,
-                    "label" => "ID",
                     "value" => $oPurchaseOrder->assigned_id,
                 ],
                 [
                     "position" => 1,
-                    "label" => "Quantity",
                     "value" => $oPurchaseOrder->quantity,
                 ],
                 [
                     "position" => 2,
-                    "label" => "Unit Measure",
                     "value" => $oPurchaseOrder->unit_measure,
                 ],
                 [
                     "position" => 3,
-                    "label" => "Unit Price",
                     "value" => $oPurchaseOrder->unit_price,
                 ],
                 [
                     "position" => 5,
-                    "label" => "ID Qualifier",
                     "value" => $oPurchaseOrder->id_qualifier,
                 ],
                 [
                     "position" => 6,
-                    "label" => "Item ID",
                     "value" => $oPurchaseOrder->item_id,
                 ],
                 [
                     "position" => 7,
-                    "label" => "ID Qualifier 2",
                     "value" => $oPurchaseOrder->id_qualifier2,
                 ],
                 [
                     "position" => 8,
-                    "label" => "Item ID 2",
                     "value" => $oPurchaseOrder->item_id2,
                 ],
                 [
                     "position" => 9,
-                    "label" => "Code",
                     "value" => $oPurchaseOrder->code,
                 ],
 
@@ -432,6 +454,13 @@ class EdiController extends Controller
         return $sItemDataLine;
     }
 
+    /**
+     * Create PID line - Product description
+     *
+     * @param $oPurchaseOrder
+     * @return string
+     *
+     */
     public function createPid($oPurchaseOrder)
     {
         $aPidDataElements = [
@@ -440,17 +469,14 @@ class EdiController extends Controller
             "data" => [
                 [
                     "position" => 0,
-                    "label" => "City",
                     "value" => $oPurchaseOrder->item_description_code,
                 ],
                 [
                     "position" => 1,
-                    "label" => "State",
                     "value" => $oPurchaseOrder->item_class_code,
                 ],
                 [
                     "position" => 4,
-                    "label" => "Country",
                     "value" => $oPurchaseOrder->item_description,
                 ],
             ]
@@ -460,6 +486,16 @@ class EdiController extends Controller
         return $sPIDLine;
     }
 
+    /**
+     * This method compiles all of the text lines from the above methods and outputs to both the browser and target text
+     * file. Note: Line breaks are set to read correctly in the output text file using $_sLineEnd value of "\r\n".
+     * If a readable format is desired for browser view, modify the global class var $_sLineEnd value to "<br />".
+     *
+     * @param $id
+     * @param PurchaseOrder $oPurchaseOrders
+     * @return string
+     *
+     */
     public function createPurchaseOrderEdi($id, PurchaseOrder $oPurchaseOrders)
     {
 
@@ -471,6 +507,7 @@ class EdiController extends Controller
             exit;
         }
 
+        // Begin gathering data fot the N(x) block lines and store them into the array.
         $aNamingBlockTypes = array();
 
         $oPoVendorAddress = $oPurchaseOrder->vendorAddress;
@@ -498,11 +535,11 @@ class EdiController extends Controller
             "symbol" => "VN",
             "data" => $oPoVendorAddress));
 
-
+        // After the array of active naming blocks has been compiled, build the text blocks lines.
         $sNamingBlocks = "";
         $sNamingBlocks .= $this->createNamingBlock($aNamingBlockTypes);
 
-
+        // Start line. This line used a randomly generated 10 digit number (may not be proper) in the starting format line.
         $sStLine = "ST" . $this->_sDelimiter . "850" . $this->_sDelimiter . $iRandomId . $this->_sReturn;
         $sEdiBegLine = $this->createBeg($oPurchaseOrder);
         $sCurLine = $this->createCur($oPurchaseOrder);
@@ -514,7 +551,8 @@ class EdiController extends Controller
         // Get all Sac data for this PO. Then pass then to create the lines
         $aPoSacs = $oPurchaseOrder->poSacs;
         $sSacLines = $this->createSac($aPoSacs);
-        
+
+        // Create these Edi lines based on the PO data
         $sItdLine = $this->createItd($oPurchaseOrder);
         $sDtmLine = $this->createDtm($oPurchaseOrder);
         $sTd5Line = $this->createTd5($oPurchaseOrder);
@@ -522,6 +560,7 @@ class EdiController extends Controller
         $sPidLine = $this->createPid($oPurchaseOrder);
         $sCttLine = "CTT" . $this->_sDelimiter . "1" . $this->_sReturn; // One transaction
 
+        // First line of the Edi
         $sIsaLine =
             "ISA" . $this->_sDelimiter . "00" . $this->_sDelimiter .
             "\t" . $this->_sDelimiter . "00" . $this->_sDelimiter .
@@ -543,6 +582,7 @@ class EdiController extends Controller
             "X" .$this->_sDelimiter .
             "005010" . $this->_sReturn;
 
+        // Assemble the main body lines that will be totaled in the SE line
         $sEdiBody =
             $sStLine .
             $sEdiBegLine .
@@ -557,7 +597,11 @@ class EdiController extends Controller
             $sPidLine .
             $sCttLine;
 
-        // Count the lines based on which ever line ending characters are being used.
+        /**
+         * Count the lines based on which ever line ending characters are being used. In order to have proper line count,
+         * We need to know which line break type is currently active.
+         *
+         */
         $lines_arr = $this->_sReturn == "<br />" ? preg_split("/(<br \/>)/", $sEdiBody) : preg_split("/\r/\n", $sEdiBody);
         $iTotalLines = count($lines_arr);
 
@@ -567,7 +611,6 @@ class EdiController extends Controller
 
         // Build the final Edi string
         $sPoEdi = $sIsaLine . $sGsLine . $sEdiBody . $sSeLine . $sGeLine . $sIeaLine;
-
 
         $path = storage_path();
         $ediFile = fopen($path . "/app/public/purchase_order_edi.txt", "w") or die("Unable to open file!");
