@@ -8,7 +8,7 @@ class EdiController extends Controller
 {
     protected $_sDelimiter = "*";
     protected $_sLineEnd = "~";
-    protected $_sReturn = "\r\n";
+    protected $_sReturn = "<br />";
     protected $_sDateString;
     protected $_sTimeString;
 
@@ -35,6 +35,7 @@ class EdiController extends Controller
         $iKey = 0;
         for($i = 0; $i < $iTotalPositions; $i++) {
 
+            // Add the delimiter under either condition to follow...
             $sLine .= $this->_sDelimiter;
             $iCurrentPosition = isset($aDataElements[$iKey]["position"]) ? (int)$aDataElements[$iKey]["position"] : null;
 
@@ -120,6 +121,8 @@ class EdiController extends Controller
      */
     public function createRef($aPoReferences)
     {
+        // Assign each Ref entry in each purchase order from the array coming in. Assign them to a new array that will
+        // used to build the final block of Ref lines for the the final output string
         $aRefDataLines = array();
         foreach($aPoReferences as $aPoReference) {
             $aRefDataLines[] = [
@@ -158,6 +161,8 @@ class EdiController extends Controller
      */
     public function createSac($aPoSacs)
     {
+        // Assign each Sac entry in each purchase order from the array coming in. Assign them to a new array that will
+        // used to build the final block of Sac lines for the the final output string
         $aSacDataLines = array();
         foreach($aPoSacs as $aPoSac) {
             $aSacDataLines[] = [
