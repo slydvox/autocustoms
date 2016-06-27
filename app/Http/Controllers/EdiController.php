@@ -321,7 +321,7 @@ class EdiController extends Controller
             ];
             $sNBlockLine .= $this->createEdiLine($aN1DataElements) . $this->_sReturn;
 
-            $aN2DataElements = [
+            $aN3DataElements = [
                 "prefix"          => "N3",
                 "total_positions" => 2,
                 "data"            => [
@@ -335,9 +335,9 @@ class EdiController extends Controller
                     ],
                 ]
             ];
-            $sNBlockLine .= $this->createEdiLine($aN2DataElements) . $this->_sReturn;
+            $sNBlockLine .= $this->createEdiLine($aN3DataElements) . $this->_sReturn;
 
-            $aN3DataElements = [
+            $aN4DataElements = [
                 "prefix" => "N4",
                 "total_positions" => 4,
                 "data" => [
@@ -359,7 +359,7 @@ class EdiController extends Controller
                     ],
                 ]
             ];
-            $sNBlockLine .= $this->createEdiLine($aN3DataElements) . $this->_sReturn;
+            $sNBlockLine .= $this->createEdiLine($aN4DataElements) . $this->_sReturn;
 
             if($sType != "VN") {
                 $aPerDataElements = [
